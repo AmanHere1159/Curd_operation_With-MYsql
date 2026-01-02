@@ -1,4 +1,5 @@
-const { ServiceaddUser, ServicereadAllUser, ServiceupdateUserWithID, some, ServicedeleteUserWithID } = require("../Service/serrvice");
+
+const serviceLayer = require("../Service/serrvice") 
 
 exports.hello = async (req, res) => {
   res.status(201).send(JSON.stringify({ Message: "Hello from my side" }));
@@ -7,12 +8,8 @@ exports.hello = async (req, res) => {
 exports.addUser = async (req, res) => {
   try {
     const { userID, pointsEarned, pointsRedeemed, transactionDate } = req.body;
-    const result = await ServiceaddUser({
-      userID,
-      pointsEarned,
-      pointsRedeemed,
-      transactionDate,
-    });
+    const dataToSend = {userID,pointsEarned,pointsRedeemed,transactionDate };
+      const result = await serviceLayer.addUser(dataToSend);
     console.log(`the controller result ${result}`);
     if (result) {
       return res.status(200).json({ message: "user added succesfully" });
@@ -27,7 +24,7 @@ exports.addUser = async (req, res) => {
 // read All users from rewardpoints
 exports.readAllUers = async (req, res) => {
   try {
-    const result = await ServicereadAllUser();
+    const result = await serviceLayer.readAllUser();
     if (result) {
       return res.status(200).json(result);
     } else {
@@ -44,22 +41,18 @@ exports.updateUserWithID = async (req, res) => {
     const { url } = req;
     const id = url.split("/").pop();
     const { pointsEarned, pointsRedeemed, transactionDate } = req.body;
-    // console.log(`id is ${id} 1->${pointsEarned} 2->${pointsRedeemed}`)
-    const result = await ServiceupdateUserWithID({id,pointsEarned, pointsRedeemed, transactionDate});
-     
-    if(result===1){
-       res.json({ message: "User updated successfully", RewardID: id });
-     }
-     else if(result===0){
-       res.json({ message: "could not update user", RewardID: id });
-     }
-     else if(result===404){
-       res.json({ message: "user does not exists!!!", RewardID: id });
-     }
-     else{
-       res.json({ message: "inside catch error", RewardID: id });
-     }
+    const dataToSend = {id,pointsEarned,pointsRedeemed, transactionDate}
+    const result = await serviceLayer.updateUserWithID(dataToSend);
 
+    if (result === 1) {
+      res.json({ message: "User updated successfully", RewardID: id });
+    } else if (result === 0) {
+      res.json({ message: "could not update user", RewardID: id });
+    } else if (result === 404) {
+      res.json({ message: "user does not exists!!!", RewardID: id });
+    } else {
+      res.json({ message: "inside catch error", RewardID: id });
+    }
   } catch (error) {
     console.log(`error is ${error}`);
     res.status(400).send("this is error", error);
@@ -68,23 +61,20 @@ exports.updateUserWithID = async (req, res) => {
 // deleteUser with ID
 exports.deleteUserWithID = async (req, res) => {
   try {
-    const db = req.db;
     const { url } = req;
     const id = url.split("/").pop();
-    const result = await ServicedeleteUserWithID({id});
-     
-    if(result===1){
-       res.json({ message: "User deleted successfully", RewardID: id });
-     }
-     else if(result===0){
-       res.json({ message: "could not delete user", RewardID: id });
-     }
-     else if(result===404){
-       res.json({ message: "user does not exists!!!", RewardID: id });
-     }
-     else{
-       res.json({ message: "internal error", RewardID: id });
-     }
+    const idToSend = {id}
+    const result = await serviceLayer.deleteUserWithID(idToSend);
+
+    if (result === 1) {
+      res.json({ message: "User deleted successfully", RewardID: id });
+    } else if (result === 0) {
+      res.json({ message: "could not delete user", RewardID: id });
+    } else if (result === 404) {
+      res.json({ message: "user does not exists!!!", RewardID: id });
+    } else {
+      res.json({ message: "internal error", RewardID: id });
+    }
   } catch (error) {
     console.log(`error is ${error}`);
     res.status(400).send("this is error", error);

@@ -1,0 +1,67 @@
+{
+  "swaggerDefinition": {
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Reward Points System",
+      "version": "1.0.0",
+      "description": "API documentation for the Reward Points System"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:5012/api/rewards"
+      }
+    ],
+    "components": {
+  "schemas": {
+    "users": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "integer",
+          "example": 1
+        },
+        "name": {
+          "type": "string",
+          "example": "John Doe"
+        },
+        "email": {
+          "type": "string",
+          "example": "john.doe@example.com"
+        }
+      },
+      "required": ["userId", "name", "email"]
+    },
+    "rewardroints": {
+      "type": "object",
+      "properties": {
+         "rewardId": {
+          "type": "integer",
+          "example": 1
+        },
+        "userId": {
+          "type": "integer",
+          "example": 1
+        },
+        "pointsEarned": {
+          "type": "integer",
+          "example": 100
+        },
+        "pointsRedeemed": {
+          "type": "integer",
+          "example": 20
+        },
+        "transactionDate": {
+          "type": "string",
+          "format": "date",
+          "example": "2024-01-15"
+        }
+      },
+      "required": ["rewardId","userId", "pointsEarned", "pointsRedeemed", "transactionDate"]
+    }
+  }
+}
+
+  },
+  "apis": ["./router/*.js"]
+
+}
